@@ -466,3 +466,167 @@ footer {
         width: 140px;
     }
 }
+
+/* =========================
+   PROJECT PAGE
+========================= */
+
+.project-hero {
+    min-height: 70vh;
+
+    display: flex;
+
+    align-items: center;
+    justify-content: center;
+
+    text-align: center;
+
+    padding: 100px 7%;
+
+    background:
+        radial-gradient(
+            circle at center,
+            rgba(224, 100, 27, 0.16),
+            transparent 50%
+        );
+}
+
+.project-hero-content {
+    max-width: 900px;
+}
+
+.project-hero h1 {
+    font-size: clamp(45px, 7vw, 80px);
+
+    line-height: 1;
+
+    margin: 20px 0;
+}
+
+.project-hero-content > p:not(.tag) {
+    color: #aeb3b8;
+
+    font-size: 18px;
+
+    max-width: 700px;
+
+    margin: auto;
+}
+
+.status {
+    display: inline-block;
+
+    margin-top: 30px;
+
+    padding: 8px 14px;
+
+    border-radius: 100px;
+
+    background: rgba(224, 100, 27, 0.12);
+
+    border: 1px solid rgba(224, 100, 27, 0.35);
+
+    color: #E0641B;
+
+    font-size: 11px;
+
+    font-weight: bold;
+
+    letter-spacing: 2px;
+}
+
+.project-details {
+    max-width: 900px;
+}
+
+.project-details > p {
+    color: #aeb3b8;
+
+    font-size: 18px;
+}
+
+.feature-grid {
+    display: grid;
+
+    grid-template-columns: repeat(2, 1fr);
+
+    gap: 20px;
+}
+
+.feature-card {
+    padding: 30px;
+
+    background: #15181b;
+
+    border: 1px solid #292d31;
+
+    border-radius: 14px;
+
+    transition: 0.25s;
+}
+
+.feature-card:hover {
+    transform: translateY(-5px);
+
+    border-color: #E0641B;
+}
+
+.feature-card span {
+    font-size: 35px;
+}
+
+.feature-card h3 {
+    margin: 15px 0 8px;
+
+    font-size: 22px;
+}
+
+.feature-card p {
+    color: #aeb3b8;
+}
+
+.status-box {
+    padding: 35px;
+
+    background: #15181b;
+
+    border: 1px solid #292d31;
+
+    border-radius: 14px;
+
+    text-align: center;
+}
+
+.status-box p {
+    color: #aeb3b8;
+
+    margin-top: 15px;
+}
+
+.project-coming {
+    color: #E0641B;
+
+    font-weight: bold;
+
+    font-size: 14px;
+}
+
+.footer-brand {
+    display: flex;
+
+    align-items: center;
+
+    gap: 10px;
+}
+
+@media (max-width: 700px) {
+
+    .feature-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .project-hero {
+        min-height: 65vh;
+    }
+
+}

@@ -45,13 +45,26 @@ header {
 .logo {
     display: flex;
     align-items: center;
+    gap: 10px;
+
+    font-size: 20px;
+    font-weight: 800;
+    white-space: nowrap;
 }
 
 .logo img {
-    width: 60px;
-    height: 60px;
+    width: 55px;
+    height: 55px;
     object-fit: contain;
     display: block;
+}
+
+.logo span {
+    color: #ffffff;
+}
+
+.logo strong {
+    color: #E0641B;
 }
 nav {
     display: flex;
@@ -380,14 +393,24 @@ footer {
         padding: 15px 5%;
     }
 
+    @media (max-width: 700px) {
+
     .logo img {
-    width: 55px;
-    height: 55px;
+        width: 48px;
+        height: 48px;
+    }
+
+    .logo {
+        font-size: 17px;
+        gap: 8px;
     }
 
     nav {
         display: none;
     }
+
+    /* resto do seu código */
+}
 
     .hero {
         min-height: 80vh;

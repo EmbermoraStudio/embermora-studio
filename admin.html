@@ -513,7 +513,39 @@
 
     </footer>
 
+    <script>
+    const SUPABASE_URL =
+        "https://snbjzkdjvpdqkgnqmnol.supabase.co";
 
+    const SUPABASE_KEY =
+        "sb_publishable_slbKbii7pGS3rjKzldbDPQ_AvaQdzd9";
+
+    const supabaseClient =
+        window.supabase.createClient(
+            SUPABASE_URL,
+            SUPABASE_KEY
+        );
+
+    async function verificarLogin() {
+
+        const {
+            data: { session }
+        } = await supabaseClient.auth.getSession();
+
+        if (!session) {
+            window.location.href = "login.html";
+            return;
+        }
+
+        console.log(
+            "Administrador autenticado:",
+            session.user.email
+        );
+    }
+
+    verificarLogin();
+    </script>
+    
 </body>
 
 </html>

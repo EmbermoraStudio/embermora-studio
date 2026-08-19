@@ -1463,3 +1463,19 @@ footer {
     }
 
 }
+
+.admin-access {
+    display: inline-block;
+
+    margin-top: 12px;
+
+    color: #555b60;
+
+    font-size: 11px;
+
+    transition: 0.2s;
+}
+
+.admin-access:hover {
+    color: #E0641B;
+}

@@ -4,550 +4,923 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>Painel Administrativo | Embermora Studio</title>
-
     <link rel="stylesheet" href="style.css">
+    <style>
+        /* Extra admin form styles */
+        .admin-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+            max-width: 700px;
+        }
+
+        .admin-form label {
+            display: block;
+            font-size: 13px;
+            font-weight: 600;
+            color: #aeb3b8;
+            margin-bottom: 6px;
+        }
+
+        .admin-form input,
+        .admin-form textarea,
+        .admin-form select {
+            width: 100%;
+            padding: 12px 14px;
+            background: #15181b;
+            border: 1px solid #292d31;
+            border-radius: 8px;
+            color: #fff;
+            font-family: inherit;
+            font-size: 14px;
+            outline: none;
+            transition: 0.2s;
+        }
+
+        .admin-form input:focus,
+        .admin-form textarea:focus,
+        .admin-form select:focus {
+            border-color: #E0641B;
+        }
+
+        .admin-form textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .admin-form .row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            border: 0;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 14px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.2s;
+        }
+
+        .btn-primary {
+            background: #E0641B;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #ff7629;
+        }
+
+        .btn-secondary {
+            background: #1b1f23;
+            color: #fff;
+            border: 1px solid #30343a;
+        }
+
+        .btn-secondary:hover {
+            border-color: #E0641B;
+        }
+
+        .btn-danger {
+            background: rgba(220, 50, 50, 0.15);
+            color: #ff6b6b;
+            border: 1px solid rgba(220, 50, 50, 0.3);
+        }
+
+        .btn-danger:hover {
+            background: rgba(220, 50, 50, 0.25);
+        }
+
+        .btn-sm {
+            padding: 8px 12px;
+            font-size: 12px;
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 10px;
+        }
+
+        .msg {
+            padding: 12px 16px;
+            border-radius: 8px;
+            font-size: 14px;
+            margin-bottom: 20px;
+            display: none;
+        }
+
+        .msg.success {
+            display: block;
+            background: rgba(46, 160, 67, 0.15);
+            border: 1px solid rgba(46, 160, 67, 0.35);
+            color: #3fb950;
+        }
+
+        .msg.error {
+            display: block;
+            background: rgba(220, 50, 50, 0.15);
+            border: 1px solid rgba(220, 50, 50, 0.35);
+            color: #ff6b6b;
+        }
+
+        .projects-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            margin-bottom: 30px;
+        }
+
+        .project-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 15px;
+            padding: 18px 20px;
+            background: #15181b;
+            border: 1px solid #292d31;
+            border-radius: 10px;
+        }
+
+        .project-item-info {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            flex: 1;
+        }
+
+        .project-item-icon {
+            font-size: 28px;
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1b1f23;
+            border-radius: 10px;
+        }
+
+        .project-item h4 {
+            font-size: 16px;
+            margin-bottom: 4px;
+        }
+
+        .project-item p {
+            font-size: 13px;
+            color: #aeb3b8;
+        }
+
+        .project-item-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .section-panel {
+            display: none;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        .admin-logout {
+            margin-top: 20px;
+            width: 100%;
+            color: #ff6b6b !important;
+        }
+
+        .admin-logout:hover {
+            background: rgba(220, 50, 50, 0.1) !important;
+        }
+
+        .color-preview {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            border: 2px solid #292d31;
+        }
+
+        .settings-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            color: #aeb3b8;
+            background: #15181b;
+            border: 1px dashed #292d31;
+            border-radius: 10px;
+        }
+
+        @media (max-width: 900px) {
+            .admin-container {
+                grid-template-columns: 1fr;
+            }
+
+            .admin-sidebar {
+                border-right: 0;
+                border-bottom: 1px solid #292d31;
+            }
+
+            .admin-form .row {
+                grid-template-columns: 1fr;
+            }
+
+            .project-item {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+        }
+    </style>
 </head>
 
 <body class="admin-page">
 
-    <!-- ADMIN HEADER -->
-
     <header class="admin-header">
-
         <a href="index.html" class="logo">
-
             <img src="logo.png" alt="Embermora Studio">
-
-            <span>
-                Embermora <strong>Studio</strong>
-            </span>
-
+            <span>Embermora <strong>Studio</strong></span>
         </a>
-
-        <a href="index.html" class="admin-back">
-            ← Voltar ao site
-        </a>
-
+        <a href="index.html" class="admin-back">← Voltar ao site</a>
     </header>
-
 
     <main class="admin-container">
 
         <!-- SIDEBAR -->
-
         <aside class="admin-sidebar">
-
             <div class="admin-profile">
-
-                <div class="admin-avatar">
-                    Es
-                </div>
-
+                <div class="admin-avatar">Es</div>
                 <div>
-                    <strong>Embermora Studio</strong>
-
-                    <span>
-                        Proprietário
-                    </span>
+                    <strong id="profile-name">Embermora Studio</strong>
+                    <span id="profile-role">Proprietário</span>
                 </div>
-
             </div>
 
-
-            <nav class="admin-menu">
-
-                <button class="active">
-                    🏠 Dashboard
-                </button>
-
-                <button>
-                    🌐 Página inicial
-                </button>
-
-                <button>
-                    🎮 Projetos
-                </button>
-
-                <button>
-                    🖼️ Imagens
-                </button>
-
-                <button>
-                    📝 Textos
-                </button>
-
-                <button>
-                    🎨 Aparência
-                </button>
-
-                <button>
-                    🤝 Colaborações
-                </button>
-
-                <button>
-                    💼 Serviços
-                </button>
-
-                <button>
-                    📬 Contato
-                </button>
-
-                <button>
-                    🔗 Links
-                </button>
-
-                <button>
-                    👥 Administradores
-                </button>
-
-                <button>
-                    📊 Estatísticas
-                </button>
-
-                <button>
-                    ⚙️ Configurações
-                </button>
-
+            <nav class="admin-menu" id="admin-menu">
+                <button data-section="dashboard" class="active">🏠 Dashboard</button>
+                <button data-section="home">🌐 Página inicial</button>
+                <button data-section="projects">🎮 Projetos</button>
+                <button data-section="links">🔗 Links</button>
+                <button data-section="appearance">🎨 Aparência</button>
+                <button data-section="settings">⚙️ Configurações</button>
+                <button data-section="admins">👥 Administradores</button>
+                <button data-section="stats">📊 Estatísticas</button>
+                <button class="admin-logout" id="btn-logout">🚪 Sair</button>
             </nav>
-
         </aside>
 
-
-        <!-- DASHBOARD -->
-
+        <!-- CONTENT -->
         <section class="admin-content">
 
-            <div class="admin-title">
+            <div id="global-msg" class="msg"></div>
 
-                <div>
-
-                    <p>
-                        PAINEL ADMINISTRATIVO
-                    </p>
-
-                    <h1>
-                        Dashboard
-                    </h1>
-
-                </div>
-
-                <span class="admin-status">
-                    ● Sistema online
-                </span>
-
-            </div>
-
-
-            <!-- WELCOME -->
-
-            <div class="admin-welcome">
-
-                <span>
-                    🔥
-                </span>
-
-                <div>
-
-                    <h2>
-                        Bem-vindo ao Embermora Studio
-                    </h2>
-
-                    <p>
-                        Olá, <strong>Proprietário</strong>.
-                        Este é o painel de controle do Studio.
-                    </p>
-
-                </div>
-
-            </div>
-
-
-            <!-- STATS -->
-
-            <div class="admin-stats">
-
-                <div class="admin-stat">
-
-                    <span>
-                        🎮
-                    </span>
-
+            <!-- ========== DASHBOARD ========== -->
+            <div class="section-panel active" id="panel-dashboard">
+                <div class="admin-title">
                     <div>
-
-                        <strong>
-                            1
-                        </strong>
-
-                        <small>
-                            Projeto
-                        </small>
-
+                        <p>PAINEL ADMINISTRATIVO</p>
+                        <h1>Dashboard</h1>
                     </div>
-
+                    <span class="admin-status">● Sistema online</span>
                 </div>
 
-
-                <div class="admin-stat">
-
-                    <span>
-                        🚧
-                    </span>
-
+                <div class="admin-welcome">
+                    <span>🔥</span>
                     <div>
-
-                        <strong>
-                            1
-                        </strong>
-
-                        <small>
-                            Em desenvolvimento
-                        </small>
-
+                        <h2>Bem-vindo ao Embermora Studio</h2>
+                        <p>Olá, <strong id="welcome-name">Proprietário</strong>. Este é o painel de controle do Studio.</p>
                     </div>
-
                 </div>
 
-
-                <div class="admin-stat">
-
-                    <span>
-                        🖼️
-                    </span>
-
-                    <div>
-
-                        <strong>
-                            1
-                        </strong>
-
-                        <small>
-                            Logo
-                        </small>
-
-                    </div>
-
-                </div>
-
-
-                <div class="admin-stat">
-
-                    <span>
-                        👑
-                    </span>
-
-                    <div>
-
-                        <strong>
-                            1
-                        </strong>
-
-                        <small>
-                            Proprietário
-                        </small>
-
-                    </div>
-
-                </div>
-
-            </div>
-
-
-            <!-- QUICK ACTIONS -->
-
-            <div class="admin-section">
-
-                <div class="admin-section-title">
-
-                    <p>
-                        AÇÕES RÁPIDAS
-                    </p>
-
-                    <h2>
-                        Gerenciar Studio
-                    </h2>
-
-                </div>
-
-
-                <div class="admin-tools">
-
-                    <button class="admin-tool">
-
-                        <span>🌐</span>
-
-                        <strong>
-                            Editar Home
-                        </strong>
-
-                        <small>
-                            Alterar conteúdo da página inicial
-                        </small>
-
-                    </button>
-
-
-                    <button class="admin-tool">
-
+                <div class="admin-stats" id="dashboard-stats">
+                    <div class="admin-stat">
                         <span>🎮</span>
-
-                        <strong>
-                            Gerenciar projetos
-                        </strong>
-
-                        <small>
-                            Adicionar ou editar projetos
-                        </small>
-
-                    </button>
-
-
-                    <button class="admin-tool">
-
-                        <span>🖼️</span>
-
-                        <strong>
-                            Gerenciar imagens
-                        </strong>
-
-                        <small>
-                            Logos, banners e imagens
-                        </small>
-
-                    </button>
-
-
-                    <button class="admin-tool">
-
-                        <span>🎨</span>
-
-                        <strong>
-                            Aparência
-                        </strong>
-
-                        <small>
-                            Cores, fontes e layout
-                        </small>
-
-                    </button>
-
-
-                    <button class="admin-tool">
-
-                        <span>📝</span>
-
-                        <strong>
-                            Editar textos
-                        </strong>
-
-                        <small>
-                            Alterar textos do site
-                        </small>
-
-                    </button>
-
-
-                    <button class="admin-tool">
-
-                        <span>🔗</span>
-
-                        <strong>
-                            Links
-                        </strong>
-
-                        <small>
-                            Discord e redes sociais
-                        </small>
-
-                    </button>
-
+                        <div>
+                            <strong id="stat-projects">-</strong>
+                            <small>Projetos</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>🚧</span>
+                        <div>
+                            <strong id="stat-dev">-</strong>
+                            <small>Em desenvolvimento</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>✅</span>
+                        <div>
+                            <strong id="stat-visible">-</strong>
+                            <small>Visíveis</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>👑</span>
+                        <div>
+                            <strong>1</strong>
+                            <small>Proprietário</small>
+                        </div>
+                    </div>
                 </div>
 
+                <div class="admin-section">
+                    <div class="admin-section-title">
+                        <p>AÇÕES RÁPIDAS</p>
+                        <h2>Gerenciar Studio</h2>
+                    </div>
+                    <div class="admin-tools">
+                        <button class="admin-tool" data-goto="home">
+                            <span>🌐</span>
+                            <strong>Editar Home</strong>
+                            <small>Alterar conteúdo da página inicial</small>
+                        </button>
+                        <button class="admin-tool" data-goto="projects">
+                            <span>🎮</span>
+                            <strong>Gerenciar projetos</strong>
+                            <small>Adicionar ou editar projetos</small>
+                        </button>
+                        <button class="admin-tool" data-goto="links">
+                            <span>🔗</span>
+                            <strong>Links</strong>
+                            <small>Discord e redes sociais</small>
+                        </button>
+                        <button class="admin-tool" data-goto="appearance">
+                            <span>🎨</span>
+                            <strong>Aparência</strong>
+                            <small>Cores e identidade</small>
+                        </button>
+                    </div>
+                </div>
             </div>
 
-
-            <!-- PROJECT -->
-
-            <div class="admin-section">
-
-                <div class="admin-section-title">
-
-                    <p>
-                        PROJETO PRINCIPAL
-                    </p>
-
-                    <h2>
-                        ✨ Harvest Horizons ✨
-                    </h2>
-
-                </div>
-
-
-                <div class="admin-project">
-
+            <!-- ========== PÁGINA INICIAL / TEXTOS ========== -->
+            <div class="section-panel" id="panel-home">
+                <div class="admin-title">
                     <div>
-
-                        <span class="project-type">
-                            ADDON
-                        </span>
-
-                        <h3>
-                            Harvest Horizons
-                        </h3>
-
-                        <p>
-                            Addon de agricultura, criação,
-                            produção e vida rural para
-                            Minecraft Bedrock.
-                        </p>
-
+                        <p>CONTEÚDO</p>
+                        <h1>Página inicial</h1>
                     </div>
-
-
-                    <span class="status">
-                        EM DESENVOLVIMENTO
-                    </span>
-
                 </div>
 
+                <form class="admin-form" id="form-home">
+                    <div>
+                        <label>Tag (acima do título)</label>
+                        <input type="text" name="hero_tag" id="hero_tag">
+                    </div>
+                    <div class="row">
+                        <div>
+                            <label>Título (parte 1)</label>
+                            <input type="text" name="hero_title" id="hero_title">
+                        </div>
+                        <div>
+                            <label>Título destacado (parte 2)</label>
+                            <input type="text" name="hero_title_highlight" id="hero_title_highlight">
+                        </div>
+                    </div>
+                    <div>
+                        <label>Descrição do hero</label>
+                        <textarea name="hero_description" id="hero_description"></textarea>
+                    </div>
+                    <div>
+                        <label>Sobre — Parágrafo 1</label>
+                        <textarea name="about_p1" id="about_p1"></textarea>
+                    </div>
+                    <div>
+                        <label>Sobre — Parágrafo 2</label>
+                        <textarea name="about_p2" id="about_p2"></textarea>
+                    </div>
+                    <div>
+                        <label>Contato — Título</label>
+                        <input type="text" name="contact_title" id="contact_title">
+                    </div>
+                    <div>
+                        <label>Contato — Texto</label>
+                        <textarea name="contact_text" id="contact_text"></textarea>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar alterações</button>
+                    </div>
+                </form>
             </div>
 
-
-            <!-- PERMISSIONS -->
-
-            <div class="admin-section">
-
-                <div class="admin-section-title">
-
-                    <p>
-                        PERMISSÕES
-                    </p>
-
-                    <h2>
-                        Controle de acesso
-                    </h2>
-
+            <!-- ========== PROJETOS ========== -->
+            <div class="section-panel" id="panel-projects">
+                <div class="admin-title">
+                    <div>
+                        <p>PORTFÓLIO</p>
+                        <h1>Projetos</h1>
+                    </div>
+                    <button class="btn btn-primary" id="btn-new-project">+ Novo projeto</button>
                 </div>
 
+                <div class="projects-list" id="projects-list">
+                    <div class="empty-state">Carregando projetos...</div>
+                </div>
 
+                <!-- Form novo/editar -->
+                <div id="project-form-wrap" style="display:none;">
+                    <div class="admin-section-title">
+                        <p id="project-form-label">NOVO PROJETO</p>
+                        <h2 id="project-form-title">Adicionar projeto</h2>
+                    </div>
+                    <form class="admin-form" id="form-project">
+                        <input type="hidden" id="project-id">
+                        <div class="row">
+                            <div>
+                                <label>Título</label>
+                                <input type="text" id="project-title" required>
+                            </div>
+                            <div>
+                                <label>Ícone (emoji)</label>
+                                <input type="text" id="project-icon" placeholder="🌾" maxlength="4">
+                            </div>
+                        </div>
+                        <div>
+                            <label>Descrição</label>
+                            <textarea id="project-description" required></textarea>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <label>Tipo</label>
+                                <select id="project-type">
+                                    <option value="ADDON">ADDON</option>
+                                    <option value="SISTEMAS">SISTEMAS</option>
+                                    <option value="TEXTURA">TEXTURA</option>
+                                    <option value="EXPERIÊNCIA">EXPERIÊNCIA</option>
+                                    <option value="OUTRO">OUTRO</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label>Status</label>
+                                <select id="project-status">
+                                    <option value="EM DESENVOLVIMENTO">EM DESENVOLVIMENTO</option>
+                                    <option value="LANÇADO">LANÇADO</option>
+                                    <option value="EM BREVE">EM BREVE</option>
+                                    <option value="PAUSADO">PAUSADO</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div>
+                                <label>Link (ex: harvest-horizons.html)</label>
+                                <input type="text" id="project-link" placeholder="harvest-horizons.html">
+                            </div>
+                            <div>
+                                <label>Ordem</label>
+                                <input type="number" id="project-order" value="0">
+                            </div>
+                        </div>
+                        <div>
+                            <label>
+                                <input type="checkbox" id="project-visible" checked style="width:auto;margin-right:8px;">
+                                Visível no site
+                            </label>
+                        </div>
+                        <div class="form-actions">
+                            <button type="submit" class="btn btn-primary">Salvar projeto</button>
+                            <button type="button" class="btn btn-secondary" id="btn-cancel-project">Cancelar</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+
+            <!-- ========== LINKS ========== -->
+            <div class="section-panel" id="panel-links">
+                <div class="admin-title">
+                    <div>
+                        <p>REDES</p>
+                        <h1>Links</h1>
+                    </div>
+                </div>
+                <form class="admin-form" id="form-links">
+                    <div>
+                        <label>Discord</label>
+                        <input type="url" id="discord_url" placeholder="https://discord.gg/...">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar links</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ========== APARÊNCIA ========== -->
+            <div class="section-panel" id="panel-appearance">
+                <div class="admin-title">
+                    <div>
+                        <p>IDENTIDADE</p>
+                        <h1>Aparência</h1>
+                    </div>
+                </div>
+                <form class="admin-form" id="form-appearance">
+                    <div>
+                        <label>Cor principal</label>
+                        <div style="display:flex;align-items:center;gap:12px;">
+                            <input type="color" id="primary_color" value="#E0641B" style="width:60px;height:40px;padding:0;border:0;background:none;cursor:pointer;">
+                            <input type="text" id="primary_color_text" value="#E0641B" style="max-width:140px;">
+                            <div class="color-preview" id="color-preview" style="background:#E0641B;"></div>
+                        </div>
+                        <small style="color:#aeb3b8;margin-top:8px;display:block;">Essa cor é salva, mas a aplicação visual completa no CSS ainda é manual por enquanto.</small>
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar aparência</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ========== CONFIGURAÇÕES ========== -->
+            <div class="section-panel" id="panel-settings">
+                <div class="admin-title">
+                    <div>
+                        <p>GERAL</p>
+                        <h1>Configurações</h1>
+                    </div>
+                </div>
+                <form class="admin-form" id="form-settings">
+                    <div>
+                        <label>Nome do Studio</label>
+                        <input type="text" id="studio_name">
+                    </div>
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">Salvar configurações</button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- ========== ADMINISTRADORES ========== -->
+            <div class="section-panel" id="panel-admins">
+                <div class="admin-title">
+                    <div>
+                        <p>ACESSO</p>
+                        <h1>Administradores</h1>
+                    </div>
+                </div>
                 <div class="permissions">
-
                     <div class="permission owner">
-
-                        <span>
-                            👑
-                        </span>
-
+                        <span>👑</span>
                         <div>
-
-                            <strong>
-                                Proprietário
-                            </strong>
-
-                            <small>
-                                Proprietário
-                            </small>
-
+                            <strong id="admin-email">Carregando...</strong>
+                            <small>Proprietário · Acesso total</small>
                         </div>
-
-                        <b>
-                            ACESSO TOTAL
-                        </b>
-
+                        <b>ACESSO TOTAL</b>
                     </div>
-
-
-                    <div class="permission">
-
-                        <span>
-                            🛠️
-                        </span>
-
-                        <div>
-
-                            <strong>
-                                Administradores
-                            </strong>
-
-                            <small>
-                                Gerenciamento do conteúdo
-                            </small>
-
-                        </div>
-
-                        <b>
-                            GERENCIÁVEL
-                        </b>
-
-                    </div>
-
                 </div>
+                <p style="margin-top:25px;color:#aeb3b8;font-size:14px;">
+                    Para adicionar mais administradores, crie novos usuários no painel do Supabase (Authentication → Users) e use o mesmo e-mail/senha no login.
+                </p>
+            </div>
 
+            <!-- ========== ESTATÍSTICAS ========== -->
+            <div class="section-panel" id="panel-stats">
+                <div class="admin-title">
+                    <div>
+                        <p>DADOS</p>
+                        <h1>Estatísticas</h1>
+                    </div>
+                </div>
+                <div class="admin-stats">
+                    <div class="admin-stat">
+                        <span>🎮</span>
+                        <div>
+                            <strong id="stats-total">-</strong>
+                            <small>Total de projetos</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>🚧</span>
+                        <div>
+                            <strong id="stats-dev">-</strong>
+                            <small>Em desenvolvimento</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>🚀</span>
+                        <div>
+                            <strong id="stats-launched">-</strong>
+                            <small>Lançados</small>
+                        </div>
+                    </div>
+                    <div class="admin-stat">
+                        <span>👁️</span>
+                        <div>
+                            <strong id="stats-visible">-</strong>
+                            <small>Visíveis no site</small>
+                        </div>
+                    </div>
+                </div>
             </div>
 
         </section>
-
     </main>
 
-
     <footer>
-
         <div class="footer-brand">
-
-            <img
-                src="logo.png"
-                alt="Embermora Studio"
-                class="footer-logo"
-            >
-
-            <span>
-                Embermora Studio
-            </span>
-
+            <img src="logo.png" alt="Embermora Studio" class="footer-logo">
+            <span>Embermora Studio</span>
         </div>
-
-        <p>
-            Painel administrativo · 2026
-        </p>
-
+        <p>Painel administrativo · 2026</p>
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    
     <script>
-    const SUPABASE_URL =
-        "https://snbjzkdjvpdqkgnqmnol.supabase.co";
+        const SUPABASE_URL = "https://snbjzkdjvpdqkgnqmnol.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_slbKbii7pGS3rjKzldbDPQ_AvaQdzd9";
 
-    const SUPABASE_KEY =
-        "sb_publishable_slbKbii7pGS3rjKzldbDPQ_AvaQdzd9";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
-    const supabaseClient =
-        window.supabase.createClient(
-            SUPABASE_URL,
-            SUPABASE_KEY
-        );
-
-    async function verificarLogin() {
-
-        const {
-            data: { session }
-        } = await supabaseClient.auth.getSession();
-
-        if (!session) {
-            window.location.href = "login.html";
-            return;
+        // ========== AUTH ==========
+        async function verificarLogin() {
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            if (!session) {
+                window.location.href = "login.html";
+                return null;
+            }
+            const email = session.user.email || "Admin";
+            document.getElementById("welcome-name").textContent = email.split("@")[0];
+            document.getElementById("profile-name").textContent = email.split("@")[0];
+            document.getElementById("admin-email").textContent = email;
+            return session;
         }
 
-        console.log(
-            "Administrador autenticado:",
-            session.user.email
-        );
-    }
+        document.getElementById("btn-logout").addEventListener("click", async () => {
+            await supabaseClient.auth.signOut();
+            window.location.href = "login.html";
+        });
 
-    verificarLogin();
+        // ========== NAVEGAÇÃO ==========
+        function showSection(name) {
+            document.querySelectorAll(".section-panel").forEach(p => p.classList.remove("active"));
+            document.querySelectorAll(".admin-menu button[data-section]").forEach(b => b.classList.remove("active"));
+
+            const panel = document.getElementById("panel-" + name);
+            if (panel) panel.classList.add("active");
+
+            const btn = document.querySelector(`.admin-menu button[data-section="${name}"]`);
+            if (btn) btn.classList.add("active");
+
+            // carregar dados específicos
+            if (name === "projects") loadProjects();
+            if (name === "home" || name === "links" || name === "appearance" || name === "settings") loadSettings();
+            if (name === "dashboard" || name === "stats") loadStats();
+        }
+
+        document.getElementById("admin-menu").addEventListener("click", (e) => {
+            const btn = e.target.closest("button[data-section]");
+            if (btn) showSection(btn.dataset.section);
+        });
+
+        document.querySelectorAll("[data-goto]").forEach(el => {
+            el.addEventListener("click", () => showSection(el.dataset.goto));
+        });
+
+        // ========== MENSAGENS ==========
+        function showMsg(text, type = "success") {
+            const el = document.getElementById("global-msg");
+            el.textContent = text;
+            el.className = "msg " + type;
+            setTimeout(() => { el.className = "msg"; }, 4000);
+        }
+
+        // ========== SETTINGS ==========
+        async function loadSettings() {
+            const { data, error } = await supabaseClient.from("site_settings").select("*");
+            if (error) {
+                console.error(error);
+                showMsg("Erro ao carregar configurações", "error");
+                return;
+            }
+            const map = {};
+            (data || []).forEach(row => map[row.key] = row.value);
+
+            const set = (id, key) => {
+                const el = document.getElementById(id);
+                if (el) el.value = map[key] || "";
+            };
+
+            set("hero_tag", "hero_tag");
+            set("hero_title", "hero_title");
+            set("hero_title_highlight", "hero_title_highlight");
+            set("hero_description", "hero_description");
+            set("about_p1", "about_p1");
+            set("about_p2", "about_p2");
+            set("contact_title", "contact_title");
+            set("contact_text", "contact_text");
+            set("discord_url", "discord_url");
+            set("studio_name", "studio_name");
+
+            const color = map["primary_color"] || "#E0641B";
+            document.getElementById("primary_color").value = color;
+            document.getElementById("primary_color_text").value = color;
+            document.getElementById("color-preview").style.background = color;
+        }
+
+        async function saveSetting(key, value) {
+            const { error } = await supabaseClient
+                .from("site_settings")
+                .upsert({ key, value, updated_at: new Date().toISOString() });
+            return error;
+        }
+
+        document.getElementById("form-home").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const keys = [
+                "hero_tag", "hero_title", "hero_title_highlight", "hero_description",
+                "about_p1", "about_p2", "contact_title", "contact_text"
+            ];
+            for (const key of keys) {
+                const err = await saveSetting(key, document.getElementById(key).value);
+                if (err) {
+                    showMsg("Erro ao salvar: " + err.message, "error");
+                    return;
+                }
+            }
+            showMsg("Página inicial salva com sucesso!");
+        });
+
+        document.getElementById("form-links").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const err = await saveSetting("discord_url", document.getElementById("discord_url").value);
+            if (err) return showMsg("Erro: " + err.message, "error");
+            showMsg("Links salvos!");
+        });
+
+        document.getElementById("form-appearance").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const color = document.getElementById("primary_color").value;
+            const err = await saveSetting("primary_color", color);
+            if (err) return showMsg("Erro: " + err.message, "error");
+            showMsg("Aparência salva!");
+        });
+
+        document.getElementById("form-settings").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const err = await saveSetting("studio_name", document.getElementById("studio_name").value);
+            if (err) return showMsg("Erro: " + err.message, "error");
+            showMsg("Configurações salvas!");
+        });
+
+        // color picker sync
+        document.getElementById("primary_color").addEventListener("input", (e) => {
+            document.getElementById("primary_color_text").value = e.target.value;
+            document.getElementById("color-preview").style.background = e.target.value;
+        });
+        document.getElementById("primary_color_text").addEventListener("input", (e) => {
+            document.getElementById("primary_color").value = e.target.value;
+            document.getElementById("color-preview").style.background = e.target.value;
+        });
+
+        // ========== PROJECTS ==========
+        async function loadProjects() {
+            const list = document.getElementById("projects-list");
+            list.innerHTML = "<div class='empty-state'>Carregando...</div>";
+
+            const { data, error } = await supabaseClient
+                .from("projects")
+                .select("*")
+                .order("sort_order", { ascending: true });
+
+            if (error) {
+                list.innerHTML = `<div class="empty-state">Erro: ${error.message}</div>`;
+                return;
+            }
+
+            if (!data || data.length === 0) {
+                list.innerHTML = `<div class="empty-state">Nenhum projeto ainda. Clique em "+ Novo projeto".</div>`;
+                return;
+            }
+
+            list.innerHTML = data.map(p => `
+                <div class="project-item" data-id="${p.id}">
+                    <div class="project-item-info">
+                        <div class="project-item-icon">${p.icon || "📦"}</div>
+                        <div>
+                            <h4>${escapeHtml(p.title)}</h4>
+                            <p>${escapeHtml(p.type)} · ${escapeHtml(p.status)} ${p.visible ? "" : "· <em>oculto</em>"}</p>
+                        </div>
+                    </div>
+                    <div class="project-item-actions">
+                        <button class="btn btn-secondary btn-sm" onclick="editProject('${p.id}')">Editar</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteProject('${p.id}')">Excluir</button>
+                    </div>
+                </div>
+            `).join("");
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+        }
+
+        document.getElementById("btn-new-project").addEventListener("click", () => {
+            document.getElementById("project-form-wrap").style.display = "block";
+            document.getElementById("project-form-label").textContent = "NOVO PROJETO";
+            document.getElementById("project-form-title").textContent = "Adicionar projeto";
+            document.getElementById("form-project").reset();
+            document.getElementById("project-id").value = "";
+            document.getElementById("project-visible").checked = true;
+            document.getElementById("project-icon").value = "🌾";
+            window.scrollTo({ top: document.getElementById("project-form-wrap").offsetTop - 80, behavior: "smooth" });
+        });
+
+        document.getElementById("btn-cancel-project").addEventListener("click", () => {
+            document.getElementById("project-form-wrap").style.display = "none";
+        });
+
+        window.editProject = async function (id) {
+            const { data, error } = await supabaseClient.from("projects").select("*").eq("id", id).single();
+            if (error || !data) return showMsg("Erro ao carregar projeto", "error");
+
+            document.getElementById("project-form-wrap").style.display = "block";
+            document.getElementById("project-form-label").textContent = "EDITAR PROJETO";
+            document.getElementById("project-form-title").textContent = "Editar projeto";
+            document.getElementById("project-id").value = data.id;
+            document.getElementById("project-title").value = data.title || "";
+            document.getElementById("project-description").value = data.description || "";
+            document.getElementById("project-type").value = data.type || "ADDON";
+            document.getElementById("project-status").value = data.status || "EM DESENVOLVIMENTO";
+            document.getElementById("project-icon").value = data.icon || "🌾";
+            document.getElementById("project-link").value = data.link || "";
+            document.getElementById("project-order").value = data.sort_order || 0;
+            document.getElementById("project-visible").checked = data.visible !== false;
+
+            window.scrollTo({ top: document.getElementById("project-form-wrap").offsetTop - 80, behavior: "smooth" });
+        };
+
+        window.deleteProject = async function (id) {
+            if (!confirm("Tem certeza que deseja excluir este projeto?")) return;
+            const { error } = await supabaseClient.from("projects").delete().eq("id", id);
+            if (error) return showMsg("Erro ao excluir: " + error.message, "error");
+            showMsg("Projeto excluído");
+            loadProjects();
+            loadStats();
+        };
+
+        document.getElementById("form-project").addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const id = document.getElementById("project-id").value;
+            const payload = {
+                title: document.getElementById("project-title").value.trim(),
+                description: document.getElementById("project-description").value.trim(),
+                type: document.getElementById("project-type").value,
+                status: document.getElementById("project-status").value,
+                icon: document.getElementById("project-icon").value.trim() || "📦",
+                link: document.getElementById("project-link").value.trim() || null,
+                sort_order: parseInt(document.getElementById("project-order").value) || 0,
+                visible: document.getElementById("project-visible").checked,
+                updated_at: new Date().toISOString()
+            };
+
+            let error;
+            if (id) {
+                ({ error } = await supabaseClient.from("projects").update(payload).eq("id", id));
+            } else {
+                ({ error } = await supabaseClient.from("projects").insert(payload));
+            }
+
+            if (error) return showMsg("Erro: " + error.message, "error");
+            showMsg(id ? "Projeto atualizado!" : "Projeto criado!");
+            document.getElementById("project-form-wrap").style.display = "none";
+            loadProjects();
+            loadStats();
+        });
+
+        // ========== STATS ==========
+        async function loadStats() {
+            const { data, error } = await supabaseClient.from("projects").select("status, visible");
+            if (error || !data) return;
+
+            const total = data.length;
+            const dev = data.filter(p => p.status === "EM DESENVOLVIMENTO").length;
+            const launched = data.filter(p => p.status === "LANÇADO").length;
+            const visible = data.filter(p => p.visible).length;
+
+            document.getElementById("stat-projects").textContent = total;
+            document.getElementById("stat-dev").textContent = dev;
+            document.getElementById("stat-visible").textContent = visible;
+
+            document.getElementById("stats-total").textContent = total;
+            document.getElementById("stats-dev").textContent = dev;
+            document.getElementById("stats-launched").textContent = launched;
+            document.getElementById("stats-visible").textContent = visible;
+        }
+
+        // ========== INIT ==========
+        (async () => {
+            const session = await verificarLogin();
+            if (session) {
+                loadStats();
+            }
+        })();
     </script>
-    
 </body>
 
 </html>

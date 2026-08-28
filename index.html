@@ -7,10 +7,8 @@
 
     <title>Embermora Studio</title>
 
-    <meta
-        name="description"
-        content="Embermora Studio — Addons, sistemas, texturas e experiências para Minecraft Bedrock."
-    >
+    <meta name="description"
+        content="Embermora Studio — Addons, sistemas, texturas e experiências para Minecraft Bedrock.">
 
     <link rel="stylesheet" href="style.css">
 </head>
@@ -18,15 +16,10 @@
 <body>
 
     <!-- HEADER -->
-
     <header>
-
         <a href="index.html" class="logo">
             <img src="logo.png" alt="Embermora Studio">
-
-            <span>
-                Embermora <strong>Studio</strong>
-            </span>
+            <span>Embermora <strong>Studio</strong></span>
         </a>
 
         <nav>
@@ -35,72 +28,175 @@
             <a href="#sobre">Sobre</a>
             <a href="#contato">Contato</a>
         </nav>
-
     </header>
-
 
     <main>
 
         <!-- HOME -->
-
         <section id="inicio" class="hero">
-
             <div class="hero-content">
-
-                <p class="tag">
-                    MINECRAFT BEDROCK STUDIO
-                </p>
+                <p class="tag" id="hero-tag">MINECRAFT BEDROCK STUDIO</p>
 
                 <h1>
-                    Criando novas
-                    <span>experiências.</span>
+                    <span id="hero-title">Criando novas</span>
+                    <span id="hero-title-highlight">experiências.</span>
                 </h1>
 
-                <p class="description">
+                <p class="description" id="hero-description">
                     Addons, sistemas, texturas e experiências
                     personalizadas para Minecraft Bedrock.
                 </p>
 
                 <div class="buttons">
-
-                    <a href="#projetos" class="button primary">
-                        Ver projetos
-                    </a>
-
-                    <a href="#sobre" class="button secondary">
-                        Conhecer o Studio
-                    </a>
-
+                    <a href="#projetos" class="button primary">Ver projetos</a>
+                    <a href="#sobre" class="button secondary">Conhecer o Studio</a>
                 </div>
-
             </div>
-
         </section>
 
-
         <!-- PROJETOS -->
-
         <section id="projetos" class="section">
-
             <div class="section-title">
-
                 <p>PORTFÓLIO</p>
-
-                <h2>
-                    Projetos em destaque
-                </h2>
-
+                <h2>Projetos em destaque</h2>
             </div>
 
-
-            <div class="projects">
-
-                <!-- HARVEST HORIZONS -->
-
+            <div class="projects" id="projects-container">
+                <!-- Projetos carregados via Supabase -->
                 <article class="project-card">
+                    <div class="project-image">🌾</div>
+                    <div class="project-content">
+                        <span class="project-type">ADDON</span>
+                        <h3>✨ Harvest Horizons ✨</h3>
+                        <p>Uma experiência de agricultura, criação e vida rural para Minecraft Bedrock.</p>
+                        <a href="harvest-horizons.html">Ver projeto →</a>
+                    </div>
+                </article>
+            </div>
+        </section>
 
-                    <div class="project-image">
-                        🌾
+        <!-- SOBRE -->
+        <section id="sobre" class="section about">
+            <div class="section-title">
+                <p>O STUDIO</p>
+                <h2>Sobre o Embermora</h2>
+            </div>
+
+            <p id="about-p1">
+                O Embermora Studio é um estúdio independente focado
+                na criação de addons, sistemas, texturas e experiências
+                para Minecraft Bedrock.
+            </p>
+
+            <p id="about-p2">
+                Nosso objetivo é transformar ideias em experiências
+                únicas, combinando programação, criatividade e design.
+            </p>
+        </section>
+
+        <!-- CONTATO -->
+        <section id="contato" class="section contact">
+            <div class="section-title">
+                <p>FALE CONOSCO</p>
+                <h2 id="contact-title">Tem uma ideia?</h2>
+            </div>
+
+            <p id="contact-text">
+                Entre em contato para projetos, colaborações
+                ou desenvolvimento de sistemas personalizados.
+            </p>
+
+            <a id="discord-link" href="https://discord.gg/S8RGVWATfS" target="_blank" rel="noopener noreferrer"
+                class="button primary">
+                Entrar no Discord
+            </a>
+        </section>
+
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <div class="footer-brand">
+            <img src="logo.png" alt="Embermora Studio" class="footer-logo">
+            <span>Embermora Studio</span>
+        </div>
+
+        <p>© 2026 Embermora Studio. Todos os direitos reservados.</p>
+
+        <a href="login.html" class="admin-access">Área administrativa</a>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        const SUPABASE_URL = "https://snbjzkdjvpdqkgnqmnol.supabase.co";
+        const SUPABASE_KEY = "sb_publishable_slbKbii7pGS3rjKzldbDPQ_AvaQdzd9";
+        const supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+        async function loadSite() {
+            // Settings
+            const { data: settings } = await supabaseClient.from("site_settings").select("*");
+            if (settings) {
+                const map = {};
+                settings.forEach(r => map[r.key] = r.value);
+
+                if (map.hero_tag) document.getElementById("hero-tag").textContent = map.hero_tag;
+                if (map.hero_title) document.getElementById("hero-title").textContent = map.hero_title;
+                if (map.hero_title_highlight) document.getElementById("hero-title-highlight").textContent = map.hero_title_highlight;
+                if (map.hero_description) document.getElementById("hero-description").textContent = map.hero_description;
+                if (map.about_p1) document.getElementById("about-p1").textContent = map.about_p1;
+                if (map.about_p2) document.getElementById("about-p2").textContent = map.about_p2;
+                if (map.contact_title) document.getElementById("contact-title").textContent = map.contact_title;
+                if (map.contact_text) document.getElementById("contact-text").textContent = map.contact_text;
+                if (map.discord_url) document.getElementById("discord-link").href = map.discord_url;
+            }
+
+            // Projects
+            const { data: projects } = await supabaseClient
+                .from("projects")
+                .select("*")
+                .eq("visible", true)
+                .order("sort_order", { ascending: true });
+
+            const container = document.getElementById("projects-container");
+            if (projects && projects.length > 0) {
+                container.innerHTML = projects.map(p => {
+                    const linkHtml = p.link
+                        ? `<a href="${escapeAttr(p.link)}">Ver projeto →</a>`
+                        : `<span class="project-coming">Em breve →</span>`;
+
+                    return `
+                        <article class="project-card">
+                            <div class="project-image">${p.icon || "📦"}</div>
+                            <div class="project-content">
+                                <span class="project-type">${escapeHtml(p.type || "ADDON")}</span>
+                                <h3>${escapeHtml(p.title)}</h3>
+                                <p>${escapeHtml(p.description || "")}</p>
+                                ${linkHtml}
+                            </div>
+                        </article>
+                    `;
+                }).join("");
+            }
+        }
+
+        function escapeHtml(str) {
+            if (!str) return "";
+            return String(str)
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;");
+        }
+
+        function escapeAttr(str) {
+            return escapeHtml(str).replace(/'/g, "&#39;");
+        }
+
+        loadSite();
+    </script>
+</body>
+
+</html>
                     </div>
 
                     <div class="project-content">

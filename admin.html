@@ -222,6 +222,34 @@
             border-radius: 10px;
         }
 
+        .file-input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 8px;
+            background: #1b1f23;
+            border: 1px dashed #30343a;
+            border-radius: 8px;
+            color: #aeb3b8;
+            font-size: 13px;
+            cursor: pointer;
+        }
+
+        .file-input:hover {
+            border-color: #E0641B;
+        }
+
+        .img-preview {
+            margin-top: 8px;
+        }
+
+        .img-preview img {
+            max-width: 160px;
+            max-height: 100px;
+            border-radius: 8px;
+            border: 1px solid #292d31;
+            object-fit: cover;
+        }
+
         @media (max-width: 900px) {
             .admin-container {
                 grid-template-columns: 1fr;
@@ -486,6 +514,39 @@
                                 Visível no site
                             </label>
                         </div>
+
+                        <div style="margin-top:10px;padding-top:18px;border-top:1px solid #292d31;">
+                            <p style="color:#E0641B;font-size:12px;font-weight:700;letter-spacing:1px;margin-bottom:12px;">VITRINE DE IMAGENS (até 4)</p>
+                            <p style="color:#aeb3b8;font-size:13px;margin-bottom:14px;">
+                                Envie do dispositivo <strong>ou</strong> cole um link. Se enviar arquivo, ele tem prioridade.
+                            </p>
+
+                            <div class="img-field">
+                                <label>Imagem 1 (principal)</label>
+                                <input type="file" id="project-file1" accept="image/*" class="file-input">
+                                <input type="url" id="project-image1" placeholder="ou cole o link https://...">
+                                <div class="img-preview" id="preview1"></div>
+                            </div>
+                            <div class="img-field" style="margin-top:16px;">
+                                <label>Imagem 2</label>
+                                <input type="file" id="project-file2" accept="image/*" class="file-input">
+                                <input type="url" id="project-image2" placeholder="ou cole o link https://...">
+                                <div class="img-preview" id="preview2"></div>
+                            </div>
+                            <div class="img-field" style="margin-top:16px;">
+                                <label>Imagem 3</label>
+                                <input type="file" id="project-file3" accept="image/*" class="file-input">
+                                <input type="url" id="project-image3" placeholder="ou cole o link https://...">
+                                <div class="img-preview" id="preview3"></div>
+                            </div>
+                            <div class="img-field" style="margin-top:16px;">
+                                <label>Imagem 4</label>
+                                <input type="file" id="project-file4" accept="image/*" class="file-input">
+                                <input type="url" id="project-image4" placeholder="ou cole o link https://...">
+                                <div class="img-preview" id="preview4"></div>
+                            </div>
+                        </div>
+
                         <div class="form-actions">
                             <button type="submit" class="btn btn-primary">Salvar projeto</button>
                             <button type="button" class="btn btn-secondary" id="btn-cancel-project">Cancelar</button>
@@ -828,6 +889,14 @@
             document.getElementById("project-id").value = "";
             document.getElementById("project-visible").checked = true;
             document.getElementById("project-icon").value = "🌾";
+            document.getElementById("project-image1").value = "";
+            document.getElementById("project-image2").value = "";
+            document.getElementById("project-image3").value = "";
+            document.getElementById("project-image4").value = "";
+            ["1","2","3","4"].forEach(n => {
+                document.getElementById("project-file" + n).value = "";
+                document.getElementById("preview" + n).innerHTML = "";
+            });
             window.scrollTo({ top: document.getElementById("project-form-wrap").offsetTop - 80, behavior: "smooth" });
         });
 
@@ -851,6 +920,17 @@
             document.getElementById("project-link").value = data.link || "";
             document.getElementById("project-order").value = data.sort_order || 0;
             document.getElementById("project-visible").checked = data.visible !== false;
+            document.getElementById("project-image1").value = data.image1 || "";
+            document.getElementById("project-image2").value = data.image2 || "";
+            document.getElementById("project-image3").value = data.image3 || "";
+            document.getElementById("project-image4").value = data.image4 || "";
+            ["1","2","3","4"].forEach(n => {
+                document.getElementById("project-file" + n).value = "";
+                const url = data["image" + n];
+                document.getElementById("preview" + n).innerHTML = url
+                    ? `<img src="${url}" alt="preview">`
+                    : "";
+            });
 
             window.scrollTo({ top: document.getElementById("project-form-wrap").offsetTop - 80, behavior: "smooth" });
         };
@@ -864,33 +944,96 @@
             loadStats();
         };
 
+        async function uploadImage(file, slot) {
+            if (!file) return null;
+            const ext = (file.name.split(".").pop() || "jpg").toLowerCase();
+            const path = `projects/${Date.now()}-${slot}.${ext}`;
+
+            const { error } = await supabaseClient.storage
+                .from("project-images")
+                .upload(path, file, { cacheControl: "3600", upsert: false });
+
+            if (error) throw error;
+
+            const { data } = supabaseClient.storage
+                .from("project-images")
+                .getPublicUrl(path);
+
+            return data.publicUrl;
+        }
+
+        // Preview local ao escolher arquivo
+        ["1","2","3","4"].forEach(n => {
+            document.getElementById("project-file" + n).addEventListener("change", (e) => {
+                const file = e.target.files[0];
+                const preview = document.getElementById("preview" + n);
+                if (!file) {
+                    preview.innerHTML = "";
+                    return;
+                }
+                const url = URL.createObjectURL(file);
+                preview.innerHTML = `<img src="${url}" alt="preview">`;
+            });
+        });
+
         document.getElementById("form-project").addEventListener("submit", async (e) => {
             e.preventDefault();
             const id = document.getElementById("project-id").value;
-            const payload = {
-                title: document.getElementById("project-title").value.trim(),
-                description: document.getElementById("project-description").value.trim(),
-                type: document.getElementById("project-type").value,
-                status: document.getElementById("project-status").value,
-                icon: document.getElementById("project-icon").value.trim() || "📦",
-                link: document.getElementById("project-link").value.trim() || null,
-                sort_order: parseInt(document.getElementById("project-order").value) || 0,
-                visible: document.getElementById("project-visible").checked,
-                updated_at: new Date().toISOString()
-            };
+            const submitBtn = e.target.querySelector('button[type="submit"]');
+            submitBtn.disabled = true;
+            submitBtn.textContent = "Salvando...";
 
-            let error;
-            if (id) {
-                ({ error } = await supabaseClient.from("projects").update(payload).eq("id", id));
-            } else {
-                ({ error } = await supabaseClient.from("projects").insert(payload));
+            try {
+                const imageUrls = {};
+                for (const n of ["1","2","3","4"]) {
+                    const fileInput = document.getElementById("project-file" + n);
+                    const urlInput = document.getElementById("project-image" + n);
+                    const file = fileInput.files[0];
+
+                    if (file) {
+                        showMsg("Enviando imagem " + n + "...");
+                        imageUrls["image" + n] = await uploadImage(file, n);
+                    } else {
+                        imageUrls["image" + n] = urlInput.value.trim() || null;
+                    }
+                }
+
+                const payload = {
+                    title: document.getElementById("project-title").value.trim(),
+                    description: document.getElementById("project-description").value.trim(),
+                    type: document.getElementById("project-type").value,
+                    status: document.getElementById("project-status").value,
+                    icon: document.getElementById("project-icon").value.trim() || "📦",
+                    link: document.getElementById("project-link").value.trim() || null,
+                    sort_order: parseInt(document.getElementById("project-order").value) || 0,
+                    visible: document.getElementById("project-visible").checked,
+                    image1: imageUrls.image1,
+                    image2: imageUrls.image2,
+                    image3: imageUrls.image3,
+                    image4: imageUrls.image4,
+                    updated_at: new Date().toISOString()
+                };
+
+                let error;
+                if (id) {
+                    ({ error } = await supabaseClient.from("projects").update(payload).eq("id", id));
+                } else {
+                    ({ error } = await supabaseClient.from("projects").insert(payload));
+                }
+
+                if (error) throw error;
+
+                showMsg(id ? "Projeto atualizado!" : "Projeto criado!");
+                document.getElementById("project-form-wrap").style.display = "none";
+                loadProjects();
+                loadStats();
+            } catch (err) {
+                console.error(err);
+                showMsg("Erro: " + (err.message || "falha ao salvar"), "error");
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = "Salvar projeto";
             }
-
-            if (error) return showMsg("Erro: " + error.message, "error");
-            showMsg(id ? "Projeto atualizado!" : "Projeto criado!");
-            document.getElementById("project-form-wrap").style.display = "none";
-            loadProjects();
-            loadStats();
         });
 
         // ========== STATS ==========
